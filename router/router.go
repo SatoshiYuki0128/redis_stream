@@ -1,8 +1,9 @@
-package main
+package router
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"redis_stream/handler"
 )
 
 var GinRouter *gin.Engine
@@ -21,6 +22,8 @@ func InitGin() error {
 			"message": "Welcome to the Gin web service!",
 		})
 	})
+
+	GinRouter.PUT("/stream", handler.CreateStream)
 
 	return nil
 }

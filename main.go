@@ -1,21 +1,28 @@
 package main
 
+import (
+	"redis_stream/redis"
+	"redis_stream/router"
+)
+
 const (
 	streamName = "mystream"
 )
 
 func main() {
-	err := InitRedis()
+	// 啟用 redis
+	err := redis.InitRedis()
 	if err != nil {
 		panic(err)
 	}
 
-	err = InitGin()
+	// 設置 gin
+	err = router.InitGin()
 	if err != nil {
 		panic(err)
 	}
 
-	err = GinRouter.Run(":80")
+	err = router.GinRouter.Run(":80")
 	if err != nil {
 		panic(err)
 	}
