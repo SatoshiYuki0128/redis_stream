@@ -10,7 +10,10 @@ func main() {
 		panic(err)
 	}
 
-	InitGin()
+	err = InitGin()
+	if err != nil {
+		panic(err)
+	}
 
 	err = GinRouter.Run(":80")
 	if err != nil {
