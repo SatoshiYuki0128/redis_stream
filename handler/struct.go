@@ -3,8 +3,9 @@ package handler
 import "fmt"
 
 type Response struct {
-	HttpCode int
-	Message  string
+	Code    int
+	Message string
+	Result  interface{}
 }
 
 type CreateStreamReq struct {

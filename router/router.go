@@ -25,6 +25,7 @@ func InitGin() error {
 
 	GinRouter.PUT("/stream", handler.CreateStream)
 	GinRouter.DELETE("/stream/:id", handler.DeleteStream)
+	GinRouter.GET("/stream", handler.GetStreamList)
 
 	return nil
 }

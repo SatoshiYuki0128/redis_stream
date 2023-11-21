@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	_const "redis_stream/const"
@@ -48,6 +49,7 @@ func DeleteStream(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, Response{
 			http.StatusBadRequest,
 			"empty id",
+			nil,
 		})
 		return
 	}
@@ -57,12 +59,32 @@ func DeleteStream(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, Response{
 			http.StatusInternalServerError,
 			err.Error(),
+			nil,
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, Response{
-		HttpCode: http.StatusOK,
-		Message:  _const.SuccessMessage,
+		http.StatusOK,
+		_const.SuccessMessage,
+		nil,
+	})
+}
+
+func GetStreamList(c *gin.Context) {
+	messages, err := redis.GetStreamList(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, Response{
+			http.StatusInternalServerError,
+			fmt.Errorf("redis.GetStreamList err: %w", err).Error(),
+			nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, Response{
+		http.StatusOK,
+		"",
+		messages,
 	})
 }

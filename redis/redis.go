@@ -51,3 +51,17 @@ func DeleteStream(ctx context.Context, id string) error {
 
 	return nil
 }
+
+func GetStreamList(ctx context.Context) ([]redis.XStream, error) {
+	messages, err := Client.XRead(ctx, &redis.XReadArgs{
+		Streams: []string{_const.StreamName, "0"},
+		Count:   10,
+		Block:   0, // 使用 0 表示非阻塞
+	}).Result()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return messages, nil
+}
