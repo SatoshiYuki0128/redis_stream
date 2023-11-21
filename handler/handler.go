@@ -11,6 +11,19 @@ func CreateStream(c *gin.Context) {
 	req := CreateStreamReq{}
 
 	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	err = req.Validate()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	message := map[string]interface{}{
 		"name": req.Name,
@@ -22,6 +35,7 @@ func CreateStream(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, "success")

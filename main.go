@@ -5,10 +5,6 @@ import (
 	"redis_stream/router"
 )
 
-const (
-	streamName = "mystream"
-)
-
 func main() {
 	// 啟用 redis
 	err := redis.InitRedis()
