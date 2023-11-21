@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	_const "redis_stream/const"
 )
 
 var Client *redis.Client
@@ -38,6 +39,15 @@ func AddStream(streamName string, message map[string]interface{}) error {
 	}
 
 	fmt.Println("Message added to Stream:", xAddResult)
+
+	return nil
+}
+
+func DeleteStream(ctx context.Context, id string) error {
+	_, err := Client.XDel(ctx, _const.StreamName, id).Result()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

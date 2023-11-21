@@ -40,3 +40,24 @@ func CreateStream(c *gin.Context) {
 
 	c.JSON(http.StatusOK, "success")
 }
+
+func DeleteStream(c *gin.Context) {
+	id := c.Param("id")
+
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "empty id",
+		})
+		return
+	}
+
+	err := redis.DeleteStream(c, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, "success")
+}
