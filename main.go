@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+const (
+	streamName = "mystream"
+)
 
 func main() {
-	fmt.Println("Hello")
+	err := InitRedis()
+	if err != nil {
+		panic(err)
+	}
+
+	InitGin()
+
+	err = GinRouter.Run(":80")
+	if err != nil {
+		panic(err)
+	}
 }
