@@ -1,5 +1,6 @@
 package _const
 
 const (
-	StreamName = "mystreams"
+	StreamName     = "mystreams"
+	SuccessMessage = "success"
 )

@@ -2,6 +2,11 @@ package handler
 
 import "fmt"
 
+type Response struct {
+	HttpCode int
+	Message  string
+}
+
 type CreateStreamReq struct {
 	Name string `json:"name"`
 	Age  int    `json:"age"`
