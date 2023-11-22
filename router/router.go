@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	_const "redis_stream/const"
 	"redis_stream/handler"
 )
 
@@ -11,8 +12,7 @@ var GinRouter *gin.Engine
 func InitGin() error {
 	GinRouter = gin.Default()
 
-	// 設置信任的代理
-	err := GinRouter.SetTrustedProxies([]string{"127.0.0.1"})
+	err := GinRouter.SetTrustedProxies([]string{_const.LocalHost})
 	if err != nil {
 		return err
 	}

@@ -3,9 +3,15 @@ package handler
 import "fmt"
 
 type Response struct {
-	Code    int
-	Message string
-	Result  interface{}
+	Status int          `json:"status"`
+	Data   interface{}  `json:"data,omitempty"`
+	Error  *errorStruct `json:"error,omitempty"`
+}
+
+type errorStruct struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Details string `json:"details,omitempty"`
 }
 
 type CreateStreamReq struct {

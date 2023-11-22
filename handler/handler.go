@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	_const "redis_stream/const"
@@ -13,15 +12,26 @@ func CreateStream(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, Response{
+			Status: http.StatusBadRequest,
+			Error: &errorStruct{
+				Code:    _const.BadRequest,
+				Message: "c.ShouldBindJSON fail",
+				Details: err.Error(),
+			},
 		})
+		return
 	}
 
 	err = req.Validate()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, Response{
+			Status: http.StatusBadRequest,
+			Error: &errorStruct{
+				Code:    _const.BadRequest,
+				Message: "req.Validate fail",
+				Details: err.Error(),
+			},
 		})
 		return
 	}
@@ -33,13 +43,21 @@ func CreateStream(c *gin.Context) {
 
 	err = redis.AddStream(_const.StreamName, message)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusInternalServerError, Response{
+			Status: _const.InternalError,
+			Error: &errorStruct{
+				Code:    _const.InternalError,
+				Message: "redis.AddStream error",
+				Details: err.Error(),
+			},
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, "success")
+	c.JSON(http.StatusOK, Response{
+		Status: http.StatusOK,
+		Data:   message,
+	})
 }
 
 func DeleteStream(c *gin.Context) {
@@ -47,9 +65,11 @@ func DeleteStream(c *gin.Context) {
 
 	if id == "" {
 		c.JSON(http.StatusBadRequest, Response{
-			http.StatusBadRequest,
-			"empty id",
-			nil,
+			Status: http.StatusInternalServerError,
+			Error: &errorStruct{
+				Code:    _const.BadRequest,
+				Message: "empty id",
+			},
 		})
 		return
 	}
@@ -57,17 +77,19 @@ func DeleteStream(c *gin.Context) {
 	err := redis.DeleteStream(c, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Response{
-			http.StatusInternalServerError,
-			err.Error(),
-			nil,
+			Status: http.StatusInternalServerError,
+			Error: &errorStruct{
+				Code:    _const.InternalError,
+				Message: "redis.DeleteStream",
+				Details: err.Error(),
+			},
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, Response{
-		http.StatusOK,
-		_const.SuccessMessage,
-		nil,
+		Status: http.StatusOK,
+		Data:   id,
 	})
 }
 
@@ -75,16 +97,18 @@ func GetStreamList(c *gin.Context) {
 	messages, err := redis.GetStreamList(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Response{
-			http.StatusInternalServerError,
-			fmt.Errorf("redis.GetStreamList err: %w", err).Error(),
-			nil,
+			Status: http.StatusInternalServerError,
+			Error: &errorStruct{
+				Code:    _const.InternalError,
+				Message: "redis.GetStreamList",
+				Details: err.Error(),
+			},
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, Response{
-		http.StatusOK,
-		"",
-		messages,
+		Status: http.StatusOK,
+		Data:   messages,
 	})
 }
