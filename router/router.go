@@ -10,6 +10,7 @@ import (
 var GinRouter *gin.Engine
 
 func InitGin() error {
+	//gin.SetMode(gin.ReleaseMode)
 	GinRouter = gin.Default()
 
 	err := GinRouter.SetTrustedProxies([]string{_const.LocalHost})
@@ -23,9 +24,12 @@ func InitGin() error {
 		})
 	})
 
-	GinRouter.PUT("/stream", handler.CreateStream)
-	GinRouter.DELETE("/stream/:id", handler.DeleteStream)
-	GinRouter.GET("/stream", handler.GetStreamList)
+	v1 := GinRouter.Group("/api/v1")
+	{
+		v1.PUT("/stream", handler.CreateStream)
+		v1.DELETE("/stream/:id", handler.DeleteStream)
+		v1.GET("/stream", handler.GetStreamList)
+	}
 
 	return nil
 }
